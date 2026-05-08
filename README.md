@@ -9,6 +9,12 @@ The idea is a fixed CPS-05 probe contacts a sample, while an FSK30J linear stage
 - CPS-05 Four-Point Probe
 - FSK30J Linear Screw Actuator (FUYU Technology)
 
+## How to Use
+
+### Whats Needed
+
+- pyserial
+
 ## Docs
 
 Project Info & Documentation can be found [Here](./docs/docs_index.md).
