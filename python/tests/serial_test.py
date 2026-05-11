@@ -36,8 +36,10 @@ print("Homing (if limit switches are connected)...")
 
 for i in range(REPEATS):
   #  print(f"Cycle {i+1}/{REPEATS}: Moving to {TRAVEL_MM} mm")
+
+    # DEV-Notes|UNIX-1778538875: MOVES DRIVE TO MAX POSITION AT GIVEN SPEED
     to_encode = "G1 X" + str(TRAVEL_MM) + " F" + str(SPEED) + "\n"
-    #f"G1 X{TRAVEL_MM} F{SPEED}\n"
+    
     ser.write(to_encode.encode('utf-8'))
     #ser.encode()
     wait_for_ok(ser)
@@ -46,6 +48,7 @@ for i in range(REPEATS):
     iteration_increase = i + 1
     print("Cycle {}/{}: Returning to 0 mm".format(iteration_increase, REPEATS))
     
+    # DEV-Notes|UNIX-1778538875: MOVE DRILL BACK TO START POSITION 0
     ser.write("G1 X0 F{}\n".format(SPEED).encode())
     wait_for_ok(ser)
     
