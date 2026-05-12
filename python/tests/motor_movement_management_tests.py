@@ -140,6 +140,7 @@ class MotorMovementManagementTests:
         elif test_action_input == "3":
             self.__TEST_manual_position_input_testing()
         elif test_action_input == "q":
+            print("Quitting Testing...")
             sys.exit()
 
 
