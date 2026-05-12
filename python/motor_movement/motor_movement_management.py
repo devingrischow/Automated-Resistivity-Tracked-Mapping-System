@@ -47,8 +47,10 @@ class MotorMovementManagement:
 
 
 
+
     def __set_serial_to_absolute_mode(self, ser):
         """Sends a command that sets the serial to GCode Absolute Mode"""
+        print("Setting SER to Absolute Mode...")
         absolute_command = "G90\n"
 
         # Use the response from board to respond
@@ -73,17 +75,33 @@ class MotorMovementManagement:
 
         return ser
 
+
     def shut_down_motors(self, ser):
+        print("Shut Down Motors Function Recieved...")
+
         optional_disable_spindle_command = "M5\n"
-
         self.__send_gcode_command_wait_for_response(ser, optional_disable_spindle_command)  # Optional: disable spindle (harmless here)
-        self.__set_serial_to_absolute_mode(ser)                                             # Back to absolute mode
 
-
+        self.__set_serial_to_absolute_mode(ser)   
+        
+        ser.close()                                          # Back to absolute mode
 
     def return_motor_to_start(self, ser):
         """When called returns the motor back to the home position"""
+        print("Return Motor to Start Function Recieved...")
+
 
         return_to_start_gcode_command = "G1 X0 F{}\n".format(self.SPEED)
-
         self.__send_gcode_command_wait_for_response(ser, return_to_start_gcode_command)
+    
+    def move_motor_to_pos(self, ser, move_to_pos):
+        """When called takes a serial instance and an `x` Position to move to, and sends gcode to the serial to move to the given position."""
+        str_move_pos = str(move_to_pos)
+
+        print("Moving to X", str_move_pos, "....")
+
+        move_to_position_cmd = "G1 X" + str_move_pos + " F" + str(self.SPEED) + "\n"
+
+        self.__send_gcode_command_wait_for_response(ser, move_to_position_cmd)
+
+        time.sleep(0.5)  # Brief pause at end of a wait for response code

@@ -14,7 +14,7 @@ The project uses a fixed CPS-05 probe that contacts a sample, while an FSK30J li
 ### Whats Needed
 
 - pyserial
-- 
+- re
 
 ## Docs
 
