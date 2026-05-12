@@ -1,8 +1,8 @@
 # Automated Resistivity Tracked Mapping System
 
-A repository containing all the code & documentation for an automated (or semi-automated) setup of a four-point probe for resistivity/sheet resistance measurements.
+A repository containing the code & documentation for an automated setup & operation of a four-point probe for reading resistivity/sheet resistance measurements of special materials.
 
-The idea is a fixed CPS-05 probe contacts a sample, while an FSK30J linear stage advances the sample in precise steps (e.g., 1 mm increments) under the probe for mapping or profiling.
+The project uses a fixed CPS-05 probe that contacts a sample, while an FSK30J linear motor advances the sample in precise steps under the probe, building & mapping a resistivity profile.
 
 ## Core Components
 
@@ -14,6 +14,7 @@ The idea is a fixed CPS-05 probe contacts a sample, while an FSK30J linear stage
 ### Whats Needed
 
 - pyserial
+- 
 
 ## Docs
 
