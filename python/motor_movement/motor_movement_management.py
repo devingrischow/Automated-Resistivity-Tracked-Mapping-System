@@ -82,9 +82,9 @@ class MotorMovementManagement:
         optional_disable_spindle_command = "M5\n"
         self.__send_gcode_command_wait_for_response(ser, optional_disable_spindle_command)  # Optional: disable spindle (harmless here)
 
-        self.__set_serial_to_absolute_mode(ser)   
+        self.__set_serial_to_absolute_mode(ser)  # Back to absolute mode (should already be in absolute mode, but for good measure)
         
-        ser.close()                                          # Back to absolute mode
+        ser.close()                                         
 
     def return_motor_to_start(self, ser):
         """When called returns the motor back to the home position"""
