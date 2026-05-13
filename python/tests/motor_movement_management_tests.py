@@ -104,7 +104,8 @@ class MotorMovementManagementTests:
         
                 
 
-
+        self.motor_movement_manager.return_motor_to_start(ser_test_motor)
+        
         print("Test Complete! Shutting Down Motor...")
         self.motor_movement_manager.shut_down_motors(ser_test_motor)
 
