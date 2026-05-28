@@ -7,15 +7,14 @@ class MotorMovementManagement:
 
     DEFAULT_SERIAL_PORT = '/dev/ttyUSB0'
     BAUD_RATE   = 115200
-    MAX_TRAVEL_DISTANCE_MM = 100            # Max Travel Distance the motor can move (Value from side of motor)
-    SPEED       = 2000             # Feed rate in mm/min (start low, e.g. 1000-3000)
+    MAX_TRAVEL_DISTANCE_MM = 30            # Max Travel Distance the motor can move (Value from side of motor)
+    SPEED       = 500             # Feed rate in mm/min (start low, e.g. 1000-3000)
 
 # ================================================================
 
 # ===================== CONFIGURATION VARIABLES ==================
 
     SERIAL_PORT = DEFAULT_SERIAL_PORT
-
 
 # ================================================================
 
@@ -50,15 +49,33 @@ class MotorMovementManagement:
 
     def __set_serial_to_absolute_mode(self, ser):
         """Sends a command that sets the serial to GCode Absolute Mode"""
-        print("Setting SER to Absolute Mode...")
+        print("Setting SER to Absolute Mode....")
         absolute_command = "G90\n"
 
         # Use the response from board to respond
         self.__send_gcode_command_wait_for_response(ser, absolute_command)
 
+    def __set_serial_to_relative_mode(self, ser):
+        """Sends command to sets the serial to Relative Mode"""
+        print("Setting SER to Relative Mode....")
+        rel_command = "G91\n"
+
+        self.__send_gcode_command_wait_for_response(ser, rel_command)
+
+
+    def __set_serial_home_zero_position(self, ser):
+        """Sends a command to set the serial home zero position to the motors current position"""
+        print("Setting New Ser Zero Position....")
+        zero_command = "G92 X0\n"
+
+        self.__send_gcode_command_wait_for_response(ser, zero_command)
+
+
+    
+    ### ---- Startup / Config ----
 
     def open_and_get_serial_connection(self):
-        """Opens a Connection to a serial connection, and returns the serial object"""
+        """Opens a Connection to a serial connection, and returns the new serial object"""
 
         print("Connecting to Benbox/GRBL...")
         ser = serial.Serial(self.SERIAL_PORT, self.BAUD_RATE, timeout=1)
@@ -76,6 +93,32 @@ class MotorMovementManagement:
         return ser
 
 
+    # def start_up_at_orgin_home(self):
+    #     """Called When Started From the orgin spot on the motor, and the home location needs to be redeclared"""
+    # ## Find Home Location
+
+    def stall_to_home(self, ser):
+        """Uses the Stall-Homing Method to find the zero home position on the motor setup, and sets the zero"""
+
+        self.__set_serial_to_relative_mode(ser)
+
+        print("Moving Backwards Along Length of Shaft until Stalled at End Point...")
+
+        move_back_towards_start_command = "G1 X-{} F{}\n".format(self.MAX_TRAVEL_DISTANCE_MM, self.SPEED)
+        self.__send_gcode_command_wait_for_response(ser, move_back_towards_start_command)
+
+        wait_for_motor_arrive_at_home_duration = 5.0
+        time.sleep(wait_for_motor_arrive_at_home_duration) # Long Pause to allow for motor to head towards Start
+
+        print("Finished Moving Towards Start! Zeroing New Home Position...")
+
+        # Return to absolute positioning and Zero Out the Position
+        self.__set_serial_to_absolute_mode(ser)
+        self.__set_serial_home_zero_position(ser)
+
+
+    ### ---- Shutdown Handling ----
+
     def shut_down_motors(self, ser):
         print("Shut Down Motors Function Recieved...")
 
@@ -86,14 +129,12 @@ class MotorMovementManagement:
         
         ser.close()                                         
 
-    def return_motor_to_start(self, ser):
-        """When called returns the motor back to the home position"""
-        print("Return Motor to Start Function Recieved...")
 
 
-        return_to_start_gcode_command = "G1 X0 F{}\n".format(self.SPEED)
-        self.__send_gcode_command_wait_for_response(ser, return_to_start_gcode_command)
+
     
+    ### ---- Movement Controls ----
+
     def move_motor_to_pos(self, ser, move_to_pos):
         """When called takes a serial instance and an `x` Position to move to, and sends gcode to the serial to move to the given position."""
         str_move_pos = str(move_to_pos)
@@ -105,3 +146,46 @@ class MotorMovementManagement:
         self.__send_gcode_command_wait_for_response(ser, move_to_position_cmd)
 
         time.sleep(0.5)  # Brief pause at end of a wait for response code
+
+    def move_by_inching(self, ser, curr_pos, inch_by):
+        """Takes a `curr_pos` value and an `inch_by` value and increments the pos value by it, however refuses movement if inch will exceed safe amount. Returns a dictionary of operation results"""
+
+        new_inched_pos = curr_pos + inch_by
+
+        max_travel_leeway_amount = 5
+
+        if new_inched_pos >= (self.MAX_TRAVEL_DISTANCE_MM - max_travel_leeway_amount):
+            # Return Early, TO CLOSE TO END 
+            fail_early_dict = {"result":1, "reason":"Reached End"}
+            return fail_early_dict
+
+        move_by_inching_cmd = "G1 X{} F{}\N".format(new_inched_pos, self.SPEED)
+
+        self.__send_gcode_command_wait_for_response(ser, move_by_inching_cmd)
+
+        time.sleep(0.5)
+
+        good_move_result = {"result":0, "new_pos":new_inched_pos}
+        return good_move_result
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def return_motor_to_start(self, ser):
+        """When called returns the motor back to the home position"""
+        print("Return Motor to Start Function Recieved...")
+
+
+        return_to_start_gcode_command = "G1 X0 F{}\n".format(self.SPEED)
+        self.__send_gcode_command_wait_for_response(ser, return_to_start_gcode_command)
+    
