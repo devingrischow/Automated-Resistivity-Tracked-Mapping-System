@@ -156,8 +156,8 @@ class MotorMovementManagement:
 
         if new_inched_pos >= (self.MAX_TRAVEL_DISTANCE_MM - max_travel_leeway_amount):
             # Return Early, TO CLOSE TO END 
-            fail_early_dict = {"result":1, "reason":"Reached End"}
-            return fail_early_dict
+            reach_end_dict = {"result":1, "reason":"Reached End"}
+            return reach_end_dict
 
         move_by_inching_cmd = "G1 X{} F{}\N".format(new_inched_pos, self.SPEED)
 
