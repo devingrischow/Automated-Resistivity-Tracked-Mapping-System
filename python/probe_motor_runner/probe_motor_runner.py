@@ -40,13 +40,19 @@ class ProbeMotorRunner:
 
 
     def __probe_runner(self, motor_ser):
+        """Probe runner handles the running processes the entire system. Covering all parts of the probes scaning & movement behavior. Able to Track position and actions from current status."""
+
         print("PROBE RUNNING...")
-        """Probe runner, when called, handles the iteration of probes scaning & movement behavior. Tracks position and action from current activities"""
 
         # EVERY ITERATION inside of PROBE RUNNER SHOULD REPRESENT AN INCHING MOVEMENT
 
+        # BEFORE EVEN STARTING PROBE RUNNER, run a check to ensure the probes are out of the way
+        self.probe_reading.wait_for_low_voltage(self.probe_reading.voltage_channel)
+
         while self.probe_runner_active:
             print("Probe runner active! Iterating...")
+
+
 
             
 
