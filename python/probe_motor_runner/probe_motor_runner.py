@@ -51,7 +51,7 @@ class ProbeMotorRunner:
     def __handle_probe_movement_result(self, motor_result):
         """Handle the result of moving the motor"""
 
-        # if it reaches the end early, handle it. 
+        # if it reaches the end, handle it. 
         if motor_result["result"] == 1:
             # END REACHED
             print("Motor Reached End...")

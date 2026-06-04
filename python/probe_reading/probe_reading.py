@@ -14,6 +14,12 @@ class ProbeReading:
     voltage_channel = None
     ads = None
 
+    def __read_probe_and_write_output(self, channel):
+        """
+        Reads the current voltage from the Probe Channel, and outputs it/ saves it to file.
+        """
+        print("Reading Probe Value...")
+
     def setup_charge_reading(self, ads_gain = 4): # Try Gain Values of 2, 4, 8, or 16
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.ads = ADS.ADS1115(self.i2c)
@@ -49,3 +55,46 @@ class ProbeReading:
 
             # Poll every 100ms to balance accuracy and CPU usage
             time.sleep(0.1)
+
+
+    def wait_for_active_voltage_readings(self, channel, duration=5.0, threshold=0.5):
+        """
+        Blocks Motor Movements and Actions until the voltage is consistently above the threshold for positive valid readings
+        """
+
+        print("Waiting for voltage to stay above threshold to allow for probe reading...")
+
+        reading_start_time = None
+
+        while True:
+            current_voltage = channel.voltage
+
+            if abs(current_voltage) > threshold:
+                if reading_start_time is None:
+                    # Start the timer the first time it crosses above zero
+                    reading_start_time = time.time()
+                elif time.time() - reading_start_time >= duration:
+                    print("Voltage Above 0, Pins Are able to Read...")
+                    return
+            else:
+                # If the value drops to low during reading, assume the button was released, and prevent phantom reading
+                reading_start_time = None
+
+            # Poll every 100ms to balance accuracy and CPU usage
+            time.sleep(0.1)
+
+
+
+    def start_safety_probe_reading(self, channel):
+        """
+        Function That handles safely reading the probe voltages.
+
+        Works primarily through waiting for the voltage to be consistent above 0 for a duration, once that is reached the reader reads the value and outputs it.
+        """
+
+        print("Starting Saftey Probe Reading...")
+
+        self.wait_for_active_voltage_readings(channel)
+
+
+
