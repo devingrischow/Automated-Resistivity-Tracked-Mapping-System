@@ -8,11 +8,44 @@ import busio
 
 class ProbeReading:
 
+    """
+    Notes:
+
+    - Output format of the Tests:
+    {
+        "test_date":1780597131,
+        "readings":[
+            {
+            "time":1780597131,
+            "voltage":5.2
+            },
+            {
+            "time":1780597369,
+            "voltage":2.6
+            }
+        ]
+    }
+
+    - Output to json format, file created at test start
+
+    """
+    
+
     """Variable that handles voltage change detection"""
 
     i2c = None
     voltage_channel = None
     ads = None
+
+    def __create_test_output_file():
+        """
+        When Called, creates the output file the test information will be written to.00
+        """
+
+    def __write_probe_output_value(self, value):
+        """
+        Function Dedicated to writing the output of the given value to the output file of the tests status.
+        """
 
     def __read_probe_and_write_output(self, channel):
         """
@@ -20,7 +53,17 @@ class ProbeReading:
         """
         print("Reading Probe Value...")
 
+        current_voltage = channel.voltage
+
+        print("READ PROBE! Writing Output.")
+
+
+
     def setup_charge_reading(self, ads_gain = 4): # Try Gain Values of 2, 4, 8, or 16
+        """
+        Handle Test Start Setup of the probe systems. 
+        """
+
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.ads = ADS.ADS1115(self.i2c)
 
@@ -85,7 +128,7 @@ class ProbeReading:
 
 
 
-    def start_safety_probe_reading(self, channel):
+    def start_and_take_safety_probe_reading(self, channel):
         """
         Function That handles safely reading the probe voltages.
 
@@ -94,7 +137,12 @@ class ProbeReading:
 
         print("Starting Saftey Probe Reading...")
 
+        print("Waiting for voltage to be above zero reading...")
         self.wait_for_active_voltage_readings(channel)
+
+        print("Voltage above zero, taking reading...")
+
+        
 
 
 

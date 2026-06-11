@@ -91,6 +91,8 @@ class ProbeMotorRunner:
             
             # ONCE HERE, A NEW WHILE LOOP IS NEEDED TO HANDLE WHILE WAITING FOR VOLTAGE INCREASE 
             # NOTHING HAPPENS UNTIL EITHER PROBE FORCIBLY STOPPED, OR VOLTAGE DETECTED
+            
+            self.probe_reading.start_and_take_safety_probe_reading(self.probe_reading.voltage_channel)
 
 
 
