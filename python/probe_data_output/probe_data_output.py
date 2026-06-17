@@ -1,7 +1,7 @@
+import json
 from datetime import datetime, timezone
 from math import isnan, isinf
 from pathlib import Path
-import json
 
 
 class ProbeDataOutput:
@@ -14,16 +14,13 @@ class ProbeDataOutput:
         """
         return str(datetime.now(timezone.utc))
 
-    def start_probe_output_session(self):
+    def start_probe_reading_session(self):
         """
         Start a new probe reading session and record it to latest_session.json.
 
         Returns:
             None
         """
-
-        print("Starting Probe Reading output Session")
-
         output_dir = Path(__file__).parent.parent / "output"
         filepath = output_dir / "latest_session.json"
 
@@ -92,3 +89,25 @@ class ProbeDataOutput:
 
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)
+
+    def close_probe_reading_session(self):
+        """
+        Closes the current probe reading session by renaming latest_session.json
+        to timestamp-session.json and checking for file existence first.
+
+        Raises:
+            FileNotFoundError: If latest_session.json does not exist.
+        """
+        output_dir = Path(__file__).parent.parent / "output"
+        source_path = output_dir / "latest_session.json"
+        new_path = output_dir / f"{self.__get_time_stamp()}-session.json"
+
+        if not source_path.exists():
+            raise FileNotFoundError(
+                f"Cannot close session: {source_path} does not exist."
+            )
+
+        try:
+            source_path.rename(new_path)
+        except OSError as e:
+            print(f"Error renaming file {source_path}: {e}")

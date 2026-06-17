@@ -23,7 +23,7 @@ class ProbeDataOutputTests:
     def TEST_probe_session_start(self):
         """Tests the start and creation of the probe data output session."""
         print("Starting Test Probe Session...")
-        self.probe_data_output.start_probe_output_session()
+        self.probe_data_output.start_probe_reading_session()
 
         print("Completed test probe session creation.")
 
@@ -36,10 +36,20 @@ class ProbeDataOutputTests:
 
         print("Completed test probe recording.")
 
+    def TEST_probe_recording_session_close(self):
+        print("Starting probe test close recording session...")
+
+        self.probe_data_output.close_probe_reading_session()
+
+        print("Completed close recording session test.")
+
+
 
 
 probe_data_output_tests = ProbeDataOutputTests()
 
 # probe_data_output_tests.TEST_probe_session_start()
 
-probe_data_output_tests.TEST_probe_session_record_probe_data()
+# probe_data_output_tests.TEST_probe_session_record_probe_data()
+
+probe_data_output_tests.TEST_probe_recording_session_close()

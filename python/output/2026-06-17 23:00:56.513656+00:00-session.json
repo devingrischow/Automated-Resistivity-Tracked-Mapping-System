@@ -1,0 +1,13 @@
+{
+    "recording_start_timestamp": "2026-06-17 22:59:11.303679+00:00",
+    "probe_readings": [
+        {
+            "probe_read_timestamp": "2026-06-17 23:00:24.440203+00:00",
+            "voltage_reading": 1.1
+        },
+        {
+            "probe_read_timestamp": "2026-06-17 23:00:38.551066+00:00",
+            "voltage_reading": 2.1
+        }
+    ]
+}
