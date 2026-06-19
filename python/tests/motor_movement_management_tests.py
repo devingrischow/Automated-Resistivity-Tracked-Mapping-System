@@ -82,6 +82,7 @@ class MotorMovementManagementTests:
 
             print("- Type a number representing an x-coordinate in space")
             print("- home -> calls return to home command")
+            print("- stall -> calls stall return to home command")
             print("- q -> Quit, Stop, Disconnect")
             print("")
 
@@ -93,6 +94,9 @@ class MotorMovementManagementTests:
             elif next_movement == "home":
                 print("Moving to Home")
                 self.motor_movement_manager.return_motor_to_start(ser_test_motor)
+            elif next_movement == "stall":
+                print("Calling Stall to Home Function")
+                self.motor_movement_manager.stall_to_home(ser_test_motor)
             elif bool(re.search(r'\d', next_movement)):
                 print("Moving to Position ", next_movement)
 

@@ -65,7 +65,7 @@ class MotorMovementManagement:
 
     def __set_serial_home_zero_position(self, ser):
         """Sends a command to set the serial home zero position to the motors current position"""
-        print("Setting New Ser Zero Position....")
+        print("Setting New Serial Zero Position....")
         zero_command = "G92 X0\n"
 
         self.__send_gcode_command_wait_for_response(ser, zero_command)
@@ -88,7 +88,7 @@ class MotorMovementManagement:
         ser.flushInput()
 
         self.__set_serial_to_absolute_mode(ser)
-
+        self.__set_serial_home_zero_position(ser)           # Set the home location when powering up.
 
         return ser
 
@@ -188,4 +188,6 @@ class MotorMovementManagement:
 
         return_to_start_gcode_command = "G1 X0 F{}\n".format(self.SPEED)
         self.__send_gcode_command_wait_for_response(ser, return_to_start_gcode_command)
+        time.sleep(5)
+        self.__set_serial_home_zero_position(ser)
     

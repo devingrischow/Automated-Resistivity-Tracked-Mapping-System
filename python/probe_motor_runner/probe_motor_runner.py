@@ -104,7 +104,7 @@ class ProbeMotorRunner:
             
 
 
-    def start_tracked_test(self):
+    def start_tracked_running_session(self):
         """Function called to start the entire process of incremental probing"""
 
         # Initalize the Probe Reader
