@@ -58,6 +58,10 @@ class ProbeReading:
         print("READ PROBE! Writing Output.")
 
 
+    def read_voltage_value_channelless(self):
+        return self.voltage_channel.voltage
+
+
 
     def setup_charge_reading(self, ads_gain = 4): # Try Gain Values of 2, 4, 8, or 16
         """
