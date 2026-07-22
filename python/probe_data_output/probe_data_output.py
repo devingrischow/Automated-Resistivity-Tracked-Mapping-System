@@ -66,7 +66,7 @@ class ProbeDataOutput:
                 or isnan(probe_reading_value)
                 or isinf(probe_reading_value)
             ):
-                raise RuntimeError(f"Probe value '{probe_reading}' is invalid ({nan})")
+                raise RuntimeError("Probe value '{}' is invalid ({})".format(probe_reading, nan))
 
         with open(filepath, "r") as f:
             data = json.load(f)
@@ -100,14 +100,14 @@ class ProbeDataOutput:
         """
         output_dir = Path(__file__).parent.parent / "output"
         source_path = output_dir / "latest_session.json"
-        new_path = output_dir / f"{self.__get_time_stamp()}-session.json"
+        new_path = output_dir / "{}-session.json".format(self.__get_time_stamp())
 
         if not source_path.exists():
             raise FileNotFoundError(
-                f"Cannot close session: {source_path} does not exist."
+                "Cannot close session: {} does not exist.".format(source_path)
             )
 
         try:
             source_path.rename(new_path)
         except OSError as e:
-            print(f"Error renaming file {source_path}: {e}")
+            print("Error renaming file {}: {}".format(source_path, e))

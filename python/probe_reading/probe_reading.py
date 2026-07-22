@@ -29,7 +29,7 @@ class ProbeReading:
     - Output to json format, file created at test start
 
     """
-    
+
 
     """Variable that handles voltage change detection"""
 
@@ -61,18 +61,21 @@ class ProbeReading:
     def read_voltage_value_channelless(self):
         return self.voltage_channel.voltage
 
+    def read_voltage_value_from_channel(self, channel):
+        return channel.voltage
+
 
 
     def setup_charge_reading(self, ads_gain = 4): # Try Gain Values of 2, 4, 8, or 16
         """
-        Handle Test Start Setup of the probe systems. 
+        Handle Test Start Setup of the probe systems.
         """
 
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.ads = ADS.ADS1115(self.i2c)
 
         self.voltage_channel = AnalogIn(self.ads, ADS.P0, ADS.P1) # Differential between A0 and A1
-        
+
         self.ads.gain = ads_gain
 
 
@@ -90,14 +93,14 @@ class ProbeReading:
 
             if abs(current_voltage) <= threshold:
                 if zero_start_time is None:
-                    # Once the threshold reaches 0V for the first time, start the timer 
+                    # Once the threshold reaches 0V for the first time, start the timer
                     zero_start_time = time.time()
 
                 elif time.time() - zero_start_time >= threshold:
                     print("Voltage has been 0V for Safe Duration...")
                     return
             else:
-                # VOLTAGE IS NOT 0, RESET TIMER 
+                # VOLTAGE IS NOT THRESHOLD, RESET TIMER
                 zero_start_time = None
 
             # Poll every 100ms to balance accuracy and CPU usage
@@ -106,7 +109,7 @@ class ProbeReading:
 
     def wait_for_active_voltage_readings(self, channel, duration=5.0, threshold=0.5):
         """
-        Blocks Motor Movements and Actions until the voltage is consistently above the threshold for positive valid readings
+        Blocks Motor Actions until the voltage is consistently above the threshold for positive valid readings
         """
 
         print("Waiting for voltage to stay above threshold to allow for probe reading...")
@@ -145,8 +148,3 @@ class ProbeReading:
         self.wait_for_active_voltage_readings(channel)
 
         print("Voltage above zero, taking reading...")
-
-        
-
-
-
