@@ -98,8 +98,8 @@ probe_reader_testing = ProbeReadTests()
 
 # probe_reader_testing.TEST_read_out_probe_value()
 # probe_reader_testing.TEST_no_metal_on_probe()
-# probe_reader_testing.TEST_metal_on_probe()
+probe_reader_testing.TEST_metal_on_probe()
 
 
 # Manual Test
-probe_reader_testing.TEST_manual_voltage_read()
+#probe_reader_testing.TEST_manual_voltage_read()

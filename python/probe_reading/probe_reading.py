@@ -66,7 +66,7 @@ class ProbeReading:
 
 
 
-    def setup_charge_reading(self, ads_gain = 4): # Try Gain Values of 2, 4, 8, or 16
+    def setup_charge_reading(self, ads_gain = 1): # Try Gain Values of 2, 4, 8, or 16
         """
         Handle Test Start Setup of the probe systems.
         """
@@ -74,7 +74,7 @@ class ProbeReading:
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.ads = ADS.ADS1115(self.i2c)
 
-        self.voltage_channel = AnalogIn(self.ads, ADS.P0, ADS.P1) # Differential between A0 and A1
+        self.voltage_channel = AnalogIn(self.ads, 1, 3) # Differential between A0 and A1
 
         self.ads.gain = ads_gain
 
@@ -107,7 +107,7 @@ class ProbeReading:
             time.sleep(0.1)
 
 
-    def wait_for_active_voltage_readings(self, channel, duration=5.0, threshold=0.5):
+    def wait_for_active_voltage_readings(self, channel, duration=3.0, threshold=0.0005):
         """
         Blocks Motor Actions until the voltage is consistently above the threshold for positive valid readings
         """
@@ -118,17 +118,20 @@ class ProbeReading:
 
         while True:
             current_voltage = channel.voltage
-
+            print("CURR VOLTAGE: ", current_voltage)
             if abs(current_voltage) > threshold:
                 if reading_start_time is None:
                     # Start the timer the first time it crosses above zero
                     reading_start_time = time.time()
+                    print("FRESH TIMER")
+
                 elif time.time() - reading_start_time >= duration:
                     print("Voltage Above 0, Pins Are able to Read...")
                     return
             else:
                 # If the value drops to low during reading, assume the button was released, and prevent phantom reading
                 reading_start_time = None
+                print("RESET TIMER")
 
             # Poll every 100ms to balance accuracy and CPU usage
             time.sleep(0.1)
