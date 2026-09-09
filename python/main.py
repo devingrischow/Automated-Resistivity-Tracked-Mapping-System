@@ -187,7 +187,10 @@ def run_scan():
 
 # ── Web server ───────────────────────────────────────────────────
 
-HTML_PAGE = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui.html")).read()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+HTML_PAGE = open(os.path.join(BASE_DIR, 'ui.html')).read()
+CSS_PAGE  = open(os.path.join(BASE_DIR, 'styles.css')).read()
+JS_PAGE   = open(os.path.join(BASE_DIR, 'app.js')).read()
 
 class CrystalHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
@@ -206,6 +209,18 @@ class CrystalHandler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(json.dumps(scan_state).encode())
+
+        elif self.path == '/styles.css':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/css')
+            self.end_headers()
+            self.wfile.write(CSS_PAGE.encode())
+
+        elif self.path == '/app.js':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/javascript')
+            self.end_headers()
+            self.wfile.write(JS_PAGE.encode())
 
         elif self.path == '/start':
             if scan_state["status"] not in ("scanning",):
